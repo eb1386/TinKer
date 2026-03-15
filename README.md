@@ -1,28 +1,28 @@
 # TinKer
 
-inference optimization for small transformer models on consumer nvidia gpus.
+Inference optimization for small transformer models on consumer NVIDIA GPUs.
 
-## benchmarks
+## Benchmarks
 
-268M param model, batch 1, seq 128, rtx 5080:
+268M param model, batch 1, seq 128, RTX 5080:
 
-| config | latency | speedup | memory |
+| Config | Latency | Speedup | Memory |
 |---|---|---|---|
-| pytorch fp32 | 6.21 ms | 1.00x | 1105 MB |
-| tinker fp16 | 5.94 ms | 1.05x | 555 MB |
-| tinker fp16 + cuda graph | 2.11 ms | **2.94x** | 570 MB |
+| PyTorch fp32 | 6.21 ms | 1.00x | 1105 MB |
+| TinKer fp16 | 5.94 ms | 1.05x | 555 MB |
+| TinKer fp16 + CUDA graph | 2.11 ms | **2.94x** | 570 MB |
 
-## what it does
+## What it does
 
-makes models under 1B params run faster on rtx gpus. one function call, no code changes needed.
+Makes models under 1B params run faster on RTX GPUs. One function call, no code changes needed.
 
-on linux with triton: replaces attention, ffn, and norm modules with hand-written fused kernels. fuses rope into the attention pass, swiglu into a single kernel, rmsnorm into one read-write. then wraps everything in `torch.compile`.
+On Linux with Triton: replaces attention, FFN, and norm modules with hand-written fused kernels. Fuses RoPE into the attention pass, SwiGLU into a single kernel, RMSNorm into one read-write. Then wraps everything in `torch.compile`.
 
-on windows (no triton): skips module replacement (adds overhead without fusion). instead applies fp16/bf16 casting, tf32 matmul, cudnn benchmark, flash sdpa, and cuda graph capture. the cuda graph is the big one — records the whole forward pass and replays it, cutting out python overhead entirely.
+On Windows (no Triton): skips module replacement (adds overhead without fusion). Instead applies fp16/bf16 casting, TF32 matmul, cuDNN benchmark, flash SDPA, and CUDA graph capture. The CUDA graph is the big one — records the whole forward pass and replays it, cutting out Python overhead entirely.
 
-## setup
+## Setup
 
-python 3.10+, pytorch 2.0+, nvidia gpu.
+Python 3.10+, PyTorch 2.0+, NVIDIA GPU.
 
 ```bash
 git clone https://github.com/eb1386/TinKer.git
@@ -30,14 +30,14 @@ cd TinKer
 pip install -e .
 ```
 
-or just copy the `tinker/` folder into your project.
+Or just copy the `tinker/` folder into your project.
 
-triton kernels (linux only):
+Triton kernels (Linux only):
 ```bash
 pip install -e ".[triton]"
 ```
 
-## usage
+## Usage
 
 ```python
 from tinker import optimize
@@ -45,7 +45,7 @@ from tinker import optimize
 model = optimize(model, dtype=torch.float16, verbose=True)
 ```
 
-with cuda graph (static shapes, biggest speedup):
+With CUDA graph (static shapes, biggest speedup):
 
 ```python
 model = optimize(
@@ -58,18 +58,18 @@ model = optimize(
 )
 ```
 
-all options:
+All options:
 
 ```python
 model = optimize(
     model,
     dtype=torch.float16,           # fp16 or bf16
-    compile=True,                   # torch.compile (needs triton)
+    compile=True,                   # torch.compile (needs Triton)
     compile_mode="reduce-overhead",
     quantize=False,                 # int8 dynamic quantization
-    replace_attention=True,         # patch attention (triton only)
-    replace_ffn=True,               # patch ffn (triton only)
-    replace_norm=True,              # patch norm (triton only)
+    replace_attention=True,         # patch attention (Triton only)
+    replace_ffn=True,               # patch FFN (Triton only)
+    replace_norm=True,              # patch norm (Triton only)
     rope_theta=10000.0,
     max_seq_len=2048,
     cuda_graph=True,
@@ -79,24 +79,24 @@ model = optimize(
 )
 ```
 
-## supported gpus
+## Supported GPUs
 
-nvidia only. no amd, no integrated graphics. auto-detects your card and loads a tuned config.
+NVIDIA only. No AMD, no integrated graphics. Auto-detects your card and loads a tuned config.
 
-has configs for every rtx 30/40/50 series card (3050 through 5090, all ti/super variants). benchmarked on rtx 5080.
+Has configs for every RTX 30/40/50 series card (3050 through 5090, all Ti/Super variants). Benchmarked on RTX 5080.
 
-## supported models
+## Supported models
 
-anything using gqa/mha/mqa + rope + swiglu + rmsnorm. detects modules by weight structure, not class names.
+Anything using GQA/MHA/MQA + RoPE + SwiGLU + RMSNorm. Detects modules by weight structure, not class names.
 
-tested on [1386.ai](https://github.com/eb1386/1386.ai) plasma 1.0 and 1.1. compatible with llama, mistral, qwen, gemma.
+Tested on [1386.ai](https://github.com/eb1386/1386.ai) Plasma 1.0 and 1.1. Compatible with LLaMA, Mistral, Qwen, Gemma.
 
-expects standard naming: `q_proj`/`k_proj`/`v_proj` or `wq`/`wk`/`wv`, `gate_proj`/`up_proj`/`down_proj` or `w1`/`w3`/`w2`.
+Expects standard naming: `q_proj`/`k_proj`/`v_proj` or `wq`/`wk`/`wv`, `gate_proj`/`up_proj`/`down_proj` or `w1`/`w3`/`w2`.
 
-## limitations
+## Limitations
 
-- inference only
-- nvidia gpus only
-- triton kernels need linux. windows gets cuda tuning + graphs instead
-- no kv cache in fused attention yet
-- cuda graphs need static input shapes
+- Inference only
+- NVIDIA GPUs only
+- Triton kernels need Linux. Windows gets CUDA tuning + graphs instead
+- No KV cache in fused attention yet
+- CUDA graphs need static input shapes
