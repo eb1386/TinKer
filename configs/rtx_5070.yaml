@@ -1,0 +1,30 @@
+# rtx 5070 config
+
+gpu: RTX 5070
+vram_gb: 12
+architecture: Blackwell
+bandwidth_gbps: 504
+
+rmsnorm:
+  block_size: 1024
+  num_warps: 4
+  num_stages: 2
+
+swiglu:
+  block_size: 1024
+  num_warps: 4
+  num_stages: 2
+
+attention:
+  block_s: 64
+  block_kv: 64
+  num_warps: 4
+  num_stages: 2
+
+rope:
+  block_s: 64
+  block_d: 64
+  num_warps: 4
+  num_stages: 2
+
+notes: blackwell mid-range

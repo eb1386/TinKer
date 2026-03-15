@@ -1,0 +1,30 @@
+# rtx 3070 config
+
+gpu: RTX 3070
+vram_gb: 8
+architecture: Ampere
+bandwidth_gbps: 448
+
+rmsnorm:
+  block_size: 512
+  num_warps: 4
+  num_stages: 2
+
+swiglu:
+  block_size: 1024
+  num_warps: 4
+  num_stages: 2
+
+attention:
+  block_s: 64
+  block_kv: 32
+  num_warps: 4
+  num_stages: 2
+
+rope:
+  block_s: 64
+  block_d: 32
+  num_warps: 4
+  num_stages: 2
+
+notes: ampere mid-range

@@ -1,0 +1,30 @@
+# rtx 5090 config
+
+gpu: RTX 5090
+vram_gb: 32
+architecture: Blackwell
+bandwidth_gbps: 1792
+
+rmsnorm:
+  block_size: 2048
+  num_warps: 8
+  num_stages: 3
+
+swiglu:
+  block_size: 4096
+  num_warps: 8
+  num_stages: 3
+
+attention:
+  block_s: 128
+  block_kv: 64
+  num_warps: 8
+  num_stages: 3
+
+rope:
+  block_s: 128
+  block_d: 64
+  num_warps: 8
+  num_stages: 3
+
+notes: blackwell flagship

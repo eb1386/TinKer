@@ -1,0 +1,30 @@
+# rtx 4080 config
+
+gpu: RTX 4080
+vram_gb: 16
+architecture: Ada Lovelace
+bandwidth_gbps: 717
+
+rmsnorm:
+  block_size: 1024
+  num_warps: 4
+  num_stages: 3
+
+swiglu:
+  block_size: 2048
+  num_warps: 4
+  num_stages: 3
+
+attention:
+  block_s: 128
+  block_kv: 64
+  num_warps: 4
+  num_stages: 3
+
+rope:
+  block_s: 128
+  block_d: 64
+  num_warps: 4
+  num_stages: 3
+
+notes: ada high-end

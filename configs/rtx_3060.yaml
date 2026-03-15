@@ -1,0 +1,30 @@
+# rtx 3060 config
+
+gpu: RTX 3060
+vram_gb: 12
+architecture: Ampere
+bandwidth_gbps: 360
+
+rmsnorm:
+  block_size: 512
+  num_warps: 2
+  num_stages: 2
+
+swiglu:
+  block_size: 1024
+  num_warps: 2
+  num_stages: 2
+
+attention:
+  block_s: 32
+  block_kv: 32
+  num_warps: 2
+  num_stages: 2
+
+rope:
+  block_s: 32
+  block_d: 32
+  num_warps: 2
+  num_stages: 2
+
+notes: bandwidth limited

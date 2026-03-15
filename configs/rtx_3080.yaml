@@ -1,0 +1,30 @@
+# rtx 3080 config
+
+gpu: RTX 3080
+vram_gb: 10
+architecture: Ampere
+bandwidth_gbps: 760
+
+rmsnorm:
+  block_size: 1024
+  num_warps: 4
+  num_stages: 2
+
+swiglu:
+  block_size: 2048
+  num_warps: 4
+  num_stages: 2
+
+attention:
+  block_s: 64
+  block_kv: 64
+  num_warps: 4
+  num_stages: 2
+
+rope:
+  block_s: 64
+  block_d: 64
+  num_warps: 4
+  num_stages: 2
+
+notes: ampere high-end
