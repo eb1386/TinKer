@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "tinker"
+version = "1.0.0"
+description = "Inference optimization framework for small language models on consumer GPUs"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Evan Borodow" }]
+urls = { Homepage = "https://github.com/eb1386/TinKer" }
+dependencies = [
+    "torch>=2.0",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+triton = ["triton>=2.1"]
+dev = ["pytest", "matplotlib"]
+
+[tool.setuptools.packages.find]
+include = ["tinker*"]
+
+[tool.setuptools.package-data]
+"*" = ["configs/*.yaml"]
