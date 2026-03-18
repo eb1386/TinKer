@@ -4,7 +4,7 @@ Inference optimization for small transformer models on consumer NVIDIA GPUs.
 
 ## Benchmarks
 
-268M param model, batch 1, seq 128, RTX 5080:
+Measured on RTX 5080, 268M param transformer, batch 1, seq 128:
 
 | Config | Latency | Speedup | Memory |
 |---|---|---|---|
@@ -40,6 +40,7 @@ pip install -e ".[triton]"
 ## Usage
 
 ```python
+import torch
 from tinker import optimize
 
 model = optimize(model, dtype=torch.float16, verbose=True)
