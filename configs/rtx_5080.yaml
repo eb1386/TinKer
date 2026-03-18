@@ -27,4 +27,4 @@ rope:
   num_warps: 8
   num_stages: 3
 
-notes: blackwell high-end
+notes: blackwell high-end, verified on hardware
